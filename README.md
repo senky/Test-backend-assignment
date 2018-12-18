@@ -1,4 +1,5 @@
-# Test-backend-assigmnet
+# Test backend assignment
+
 Task is to create backend application in Node.js using any SQL database. This application should communicate with frontend via GraphQL. There is no need to do frontend in this assessment. You can use any libraries you may consider useful. The assessment is to create an application for book catalogue.
 
 ## Use cases:
