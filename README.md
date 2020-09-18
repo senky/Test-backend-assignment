@@ -31,7 +31,7 @@ You can model SQL schema as you consider best. The same applies for GraphQL sche
 After confirming that your environment meets the above [requirements](#requirements), clone `vestberry` by doing the following:
 
 ```bash
-$ git clone git@github.com:VESTBERRY/Test-assignment.git <directory>
+$ git clone git@github.com:VESTBERRY/Test-backend-assignment.git <directory>
 $ cd <directory>
 ```
 
@@ -49,10 +49,12 @@ After completing the [installation](#installation) step, you're ready to start t
 $ yarn start  # Start the development server (or `npm start`)
 ```
 
+After this you can open in your browser the GraphiQL at [http://localhost:8000/graphql](http://localhost:8000/graphql)
+
 While developing, you will probably rely mostly on `yarn start`; however, there are additional scripts at your disposal:
 
 |`yarn <script>`        |Description|
 |-----------------------|-----------|
-|`start`                |Serves your app at `localhost:3000`|
+|`start`                |Serves your app at `localhost:8000`|
 |`lint`                 |[Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors|
 |`lint:fix`             |Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix)|
