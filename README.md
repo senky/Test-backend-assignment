@@ -5,7 +5,7 @@ Task is to create backend application in Node.js using any SQL database. This ap
 ## Use cases:
 
 * User should be able to log in.
-* User should be able to add new book, edit existing book, and delete book. User should be able to “travel back” in time and see older state of any book or library.
+* User should be able to add new book, edit existing book, and delete book. User should be able to “travel back” in time and see older state of any book.
 * Anonymous user should be able to find some book by author name or book title.
 * Pagination is not required but is big plus.
 
