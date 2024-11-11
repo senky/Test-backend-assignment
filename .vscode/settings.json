@@ -1,4 +1,7 @@
 {
-  "deno.enable": true,
-  "deno.lint": true
+  "editor.codeActionsOnSave": [
+    "source.addMissingImports",
+    "source.removeUnusedImports",
+    "source.fixAll.eslint",
+  ],
 }
