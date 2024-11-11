@@ -14,7 +14,5 @@ import { DBModule } from './db/db.module';
       sortSchema: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
