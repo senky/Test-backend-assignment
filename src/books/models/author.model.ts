@@ -5,4 +5,8 @@ export class Author {
   @Field(() => ID)
   id: number;
   name: string;
+
+  constructor(author: Author) {
+    Object.assign(this, author);
+  }
 }

@@ -1,36 +1,48 @@
-import { Book, Genre } from './models/book.model';
+import { Book } from './models/book.model';
+import { DBService } from 'src/db/db.service';
+import { eq } from 'drizzle-orm';
+import { booksTable, ratingsTable } from 'src/db/schema';
+import { Injectable } from '@nestjs/common';
 
-const books: Book[] = [
-  {
-    id: 1,
-    title: 'Book 1',
-    author: {
-      id: 1,
-      name: 'Author 1',
-    },
-    publishedYear: 2021,
-    genres: [Genre.FANTASY],
-    ratings: [],
-  },
-  {
-    id: 2,
-    title: 'Book 2',
-    author: {
-      id: 1,
-      name: 'Author 1',
-    },
-    publishedYear: 2021,
-    genres: [Genre.FANTASY],
-    ratings: [],
-  },
-];
+/**
+ * TODO: make sure to only query author and ratings if needed.
+ */
 
+@Injectable()
 export class BooksService {
-  findAll(): Book[] {
-    return books;
+  constructor(private dbService: DBService) {}
+
+  async findAll(): Promise<Book[]> {
+    const books = await this.dbService.db.query.booksTable.findMany({
+      with: {
+        author: true,
+        ratings: {
+          columns: {
+            book: false,
+            approved: false,
+          },
+          where: eq(ratingsTable.approved, true),
+        },
+      },
+    });
+
+    return books.map((book) => new Book(book));
   }
 
-  findOneById(id: number): Book {
-    return books.find((book) => book.id === id);
+  async findOneById(id: number): Promise<Book> {
+    const book = await this.dbService.db.query.booksTable.findFirst({
+      with: {
+        author: true,
+        ratings: {
+          columns: {
+            book: false,
+            approved: false,
+          },
+          where: eq(ratingsTable.approved, true),
+        },
+      },
+      where: eq(booksTable.id, id),
+    });
+    return new Book(book);
   }
 }

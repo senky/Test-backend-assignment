@@ -17,10 +17,17 @@ import { Book } from './book.model';
 export class Rating {
   @Field(() => ID)
   id: number;
-  book: Book;
   stars: number;
   comment?: string;
 
+  // Temporarily hidden to prevent circular querying book -> ratings -> book -> ...
   @HideField()
-  approved: boolean;
+  book?: Book;
+
+  @HideField()
+  approved?: boolean;
+
+  constructor(rating: Rating) {
+    Object.assign(this, rating);
+  }
 }

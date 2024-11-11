@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { BooksResolver } from './books.resolver';
 import { BooksService } from './books.service';
-import { RatingsService } from './ratings.service';
+import { DBModule } from 'src/db/db.module';
 
 @Module({
-  providers: [BooksService, RatingsService, BooksResolver],
+  imports: [DBModule],
+  providers: [BooksService, BooksResolver],
 })
 export class BooksModule {}

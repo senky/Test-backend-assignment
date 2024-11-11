@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import {
   boolean,
   integer,
@@ -12,13 +13,21 @@ export const authorsTable = pgTable('authors', {
   name: varchar().notNull(),
 });
 
-export const genre = pgEnum('genre', [
-  'Science Fiction',
-  'Romance',
-  'Personal Development',
-  'Fantasy',
-  'Thriller',
-]);
+export enum Genre {
+  SCIENCE_FICTION = 'Science Fiction',
+  ROMANCE = 'Romance',
+  PERSONAL_DEVELOPMENT = 'Personal Development',
+  FANTASY = 'Fantasy',
+  THRILLER = 'Thriller',
+}
+
+// Hack taken from: https://github.com/drizzle-team/drizzle-orm/discussions/1914#discussioncomment-9600199
+function enumToPgEnum<T extends Record<string, any>>(
+  myEnum: T,
+): [T[keyof T], ...T[keyof T][]] {
+  return Object.values(myEnum).map((value) => `${value}`) as any;
+}
+export const genre = pgEnum('genre', enumToPgEnum(Genre));
 
 export const booksTable = pgTable('books', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -35,3 +44,22 @@ export const ratingsTable = pgTable('ratings', {
   comment: text(),
   approved: boolean().default(false),
 });
+
+export const authorRelations = relations(authorsTable, ({ many }) => ({
+  books: many(booksTable),
+}));
+
+export const bookRelations = relations(booksTable, ({ many, one }) => ({
+  author: one(authorsTable, {
+    fields: [booksTable.author],
+    references: [authorsTable.id],
+  }),
+  ratings: many(ratingsTable),
+}));
+
+export const ratingRelations = relations(ratingsTable, ({ one }) => ({
+  book: one(booksTable, {
+    fields: [ratingsTable.book],
+    references: [booksTable.id],
+  }),
+}));
