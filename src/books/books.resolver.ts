@@ -6,6 +6,8 @@ import { BookDetail } from "./models/bookDetail.model";
 import { UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { GqlThrottlerGuard } from "src/security/gql-throttler.guard";
+import { GetBooksArgs } from "./args/get-books.args";
+import { GetBookArgs } from "./args/get-book.args";
 
 @Resolver(() => Book)
 export class BooksResolver {
@@ -13,17 +15,14 @@ export class BooksResolver {
 
   @Query(() => [Book], { name: "books" })
   @UseGuards(GqlThrottlerGuard)
-  async getBooks(
-    @Args("authorName", { nullable: true }) authorName?: string,
-    @Args("bookTitle", { nullable: true }) bookTitle?: string,
-  ) {
-    return this.booksService.findAll(authorName, bookTitle);
+  async getBooks(@Args() args: GetBooksArgs) {
+    return this.booksService.findAll(args);
   }
 
   @Query(() => BookDetail, { name: "book" })
   @UseGuards(JwtAuthGuard)
-  async getBook(@Args("id", { type: () => ID }) id: number) {
-    return this.booksService.getBookDetail(id);
+  async getBook(@Args() args: GetBookArgs) {
+    return this.booksService.getBookDetail(args);
   }
 
   @Mutation(() => Book)

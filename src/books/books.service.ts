@@ -18,12 +18,23 @@ import { BookDetail } from "./models/bookDetail.model";
 export class BooksService {
   constructor(private dbService: DBService) {}
 
-  async findAll(authorName?: string, bookTitle?: string): Promise<Book[]> {
+  async findAll({
+    authorName,
+    bookTitle,
+    offset,
+  }: {
+    authorName?: string;
+    bookTitle?: string;
+    offset?: number;
+    limit?: number;
+  }): Promise<Book[]> {
     const books = await this.dbService.db.query.booksTable
       .findMany({
         where: bookTitle
           ? ilike(booksTable.title, `%${bookTitle}%`)
           : undefined,
+        limit: 10,
+        offset,
         with: {
           author: true,
           ratings: {
@@ -48,10 +59,18 @@ export class BooksService {
     return books.map((book) => new Book(book));
   }
 
-  async getBookDetail(id: number): Promise<BookDetail> {
+  async getBookDetail({
+    id,
+    historyOffset,
+  }: {
+    id: number;
+    historyOffset: number;
+  }): Promise<BookDetail> {
     const currentState = await this.findOneById(id);
     const history = await this.dbService.db.query.booksHistoryTable.findMany({
       where: eq(booksHistoryTable.id, id),
+      limit: 10,
+      offset: historyOffset,
       with: {
         author: true,
         ratings: {
