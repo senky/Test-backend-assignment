@@ -1,7 +1,7 @@
 import { Book } from './models/book.model';
 import { DBService } from 'src/db/db.service';
 import { eq, ilike } from 'drizzle-orm';
-import { booksTable, ratingsTable } from 'src/db/schema';
+import { booksTable, Genre, ratingsTable } from 'src/db/schema';
 import { Injectable } from '@nestjs/common';
 
 /**
@@ -57,5 +57,25 @@ export class BooksService {
       where: eq(booksTable.id, id),
     });
     return new Book(book);
+  }
+
+  async create(
+    title: string,
+    author: number,
+    publishedYear: number,
+    genres: Genre[],
+  ): Promise<Book> {
+    const book = await this.dbService.db
+      .insert(booksTable)
+      .values({
+        title,
+        author,
+        publishedYear,
+        genres,
+      })
+      .returning();
+
+    // Since `.returning()` doesn't return the relations, we need to fetch the book again.
+    return this.findOneById(book[0].id);
   }
 }

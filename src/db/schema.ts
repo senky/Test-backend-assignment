@@ -34,7 +34,7 @@ export const genre = pgEnum('genre', enumToPgEnum(Genre));
 export const booksTable = pgTable('books', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar().notNull(),
-  author: integer().references(() => authorsTable.id, { onDelete: 'cascade' }),
+  author: integer().notNull().references(() => authorsTable.id, { onDelete: 'cascade' }),
   publishedYear: integer().notNull(),
   genres: genre().array().notNull(),
 });
