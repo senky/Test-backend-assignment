@@ -7,7 +7,7 @@ import {
   Genre,
   ratingsTable,
 } from "src/db/schema";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
 /**
  * TODO: make sure to only query author and ratings if needed.
@@ -109,10 +109,29 @@ export class BooksService {
     return this.findOneById(editedBook[0].id);
   }
 
+  async delete(id: number): Promise<number> {
+    await this.addHistoryRecord(id);
+
+    const deletedBook = await this.dbService.db
+      .delete(booksTable)
+      .where(eq(booksTable.id, id))
+      .returning();
+
+    if (!deletedBook || deletedBook.length === 0) {
+      throw new NotFoundException(`Book with id ${id} not found`);
+    }
+
+    return deletedBook[0].id;
+  }
+
   private async addHistoryRecord(id: number): Promise<void> {
     const book = await this.dbService.db.query.booksTable.findFirst({
       where: eq(booksTable.id, id),
     });
+
+    if (!book) {
+      throw new NotFoundException(`Book with id ${id} not found`);
+    }
 
     await this.dbService.db.insert(booksHistoryTable).values({
       // outdatedFrom is set to current date by default

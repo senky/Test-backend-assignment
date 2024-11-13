@@ -40,4 +40,9 @@ export class BooksResolver {
   ) {
     return this.booksService.edit(id, title, author, publishedYear, genres);
   }
+
+  @Mutation(() => ID)
+  async deleteBook(@Args("id", { type: () => ID }) id: number) {
+    return this.booksService.delete(id);
+  }
 }
