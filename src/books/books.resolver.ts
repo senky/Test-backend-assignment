@@ -7,8 +7,11 @@ export class BooksResolver {
   constructor(private booksService: BooksService) {}
 
   @Query(() => [Book], { name: 'books' })
-  async getBooks() {
-    return this.booksService.findAll();
+  async getBooks(
+    @Args('authorName', { nullable: true }) authorName?: string,
+    @Args('bookTitle', { nullable: true }) bookTitle?: string,
+  ) {
+    return this.booksService.findAll(authorName, bookTitle);
   }
 
   @Query(() => Book, { name: 'book' })

@@ -1,6 +1,6 @@
 import { Book } from './models/book.model';
 import { DBService } from 'src/db/db.service';
-import { eq } from 'drizzle-orm';
+import { eq, ilike } from 'drizzle-orm';
 import { booksTable, ratingsTable } from 'src/db/schema';
 import { Injectable } from '@nestjs/common';
 
@@ -12,19 +12,32 @@ import { Injectable } from '@nestjs/common';
 export class BooksService {
   constructor(private dbService: DBService) {}
 
-  async findAll(): Promise<Book[]> {
-    const books = await this.dbService.db.query.booksTable.findMany({
-      with: {
-        author: true,
-        ratings: {
-          columns: {
-            book: false,
-            approved: false,
+  async findAll(authorName?: string, bookTitle?: string): Promise<Book[]> {
+    const books = await this.dbService.db.query.booksTable
+      .findMany({
+        where: bookTitle
+          ? ilike(booksTable.title, `%${bookTitle}%`)
+          : undefined,
+        with: {
+          author: true,
+          ratings: {
+            columns: {
+              book: false,
+              approved: false,
+            },
+            where: eq(ratingsTable.approved, true),
           },
-          where: eq(ratingsTable.approved, true),
         },
-      },
-    });
+      })
+      // I am fully aware that this is suboptimal, but drizzle in current state doesn't allow
+      // "parent" filtering: https://github.com/drizzle-team/drizzle-orm/discussions/1152
+      // The discussion includes suggested workaround but that is so hart to read I prefer this
+      // solution while app usage is low.
+      .then((result) =>
+        authorName
+          ? result.filter(({ author }) => author.name.includes(authorName))
+          : result,
+      );
 
     return books.map((book) => new Book(book));
   }
