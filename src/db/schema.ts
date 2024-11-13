@@ -1,6 +1,8 @@
 import { relations } from 'drizzle-orm';
 import {
   boolean,
+  date,
+  index,
   integer,
   pgEnum,
   pgTable,
@@ -36,6 +38,21 @@ export const booksTable = pgTable('books', {
   publishedYear: integer().notNull(),
   genres: genre().array().notNull(),
 });
+
+export const booksHistoryTable = pgTable(
+  'booksHistory',
+  {
+    outdatedFrom: date().notNull().defaultNow(),
+    id: integer().notNull(),
+    title: varchar().notNull(),
+    author: integer().references(() => authorsTable.id),
+    publishedYear: integer().notNull(),
+    genres: genre().array().notNull(),
+  },
+  (table) => ({
+    idIdx: index('id_idx').on(table.id),
+  }),
+);
 
 export const ratingsTable = pgTable('ratings', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
