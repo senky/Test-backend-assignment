@@ -2,6 +2,7 @@ import { Args, ID, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Book } from "./models/book.model";
 import { BooksService } from "./books.service";
 import { Genre } from "src/db/schema";
+import { BookDetail } from "./models/bookDetail.model";
 
 @Resolver(() => Book)
 export class BooksResolver {
@@ -15,9 +16,9 @@ export class BooksResolver {
     return this.booksService.findAll(authorName, bookTitle);
   }
 
-  @Query(() => Book, { name: "book" })
+  @Query(() => BookDetail, { name: "book" })
   async getBook(@Args("id", { type: () => ID }) id: number) {
-    return this.booksService.findOneById(id);
+    return this.booksService.getBookDetail(id);
   }
 
   @Mutation(() => Book)

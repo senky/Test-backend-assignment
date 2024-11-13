@@ -8,6 +8,7 @@ import {
   ratingsTable,
 } from "src/db/schema";
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { BookDetail } from "./models/bookDetail.model";
 
 /**
  * TODO: make sure to only query author and ratings if needed.
@@ -47,21 +48,22 @@ export class BooksService {
     return books.map((book) => new Book(book));
   }
 
-  async findOneById(id: number): Promise<Book> {
-    const book = await this.dbService.db.query.booksTable.findFirst({
+  async getBookDetail(id: number): Promise<BookDetail> {
+    const currentState = await this.findOneById(id);
+    const history = await this.dbService.db.query.booksHistoryTable.findMany({
+      where: eq(booksHistoryTable.id, id),
       with: {
         author: true,
         ratings: {
           columns: {
             book: false,
-            approved: false,
+            // Since this query is only used by logged in users we do not limit reviews by approval.
           },
-          where: eq(ratingsTable.approved, true),
         },
       },
-      where: eq(booksTable.id, id),
     });
-    return new Book(book);
+
+    return new BookDetail(currentState, history);
   }
 
   async create(
@@ -122,6 +124,23 @@ export class BooksService {
     }
 
     return deletedBook[0].id;
+  }
+
+  private async findOneById(id: number): Promise<Book> {
+    const book = await this.dbService.db.query.booksTable.findFirst({
+      with: {
+        author: true,
+        ratings: {
+          columns: {
+            book: false,
+            approved: false,
+          },
+          where: eq(ratingsTable.approved, true),
+        },
+      },
+      where: eq(booksTable.id, id),
+    });
+    return new Book(book);
   }
 
   private async addHistoryRecord(id: number): Promise<void> {

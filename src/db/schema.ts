@@ -68,6 +68,7 @@ export const ratingsTable = pgTable("ratings", {
 
 export const authorRelations = relations(authorsTable, ({ many }) => ({
   books: many(booksTable),
+  booksHistory: many(booksHistoryTable),
 }));
 
 export const bookRelations = relations(booksTable, ({ many, one }) => ({
@@ -78,9 +79,24 @@ export const bookRelations = relations(booksTable, ({ many, one }) => ({
   ratings: many(ratingsTable),
 }));
 
+export const bookHistoryRelations = relations(
+  booksHistoryTable,
+  ({ many, one }) => ({
+    author: one(authorsTable, {
+      fields: [booksHistoryTable.author],
+      references: [authorsTable.id],
+    }),
+    ratings: many(ratingsTable),
+  }),
+);
+
 export const ratingRelations = relations(ratingsTable, ({ one }) => ({
   book: one(booksTable, {
     fields: [ratingsTable.book],
     references: [booksTable.id],
+  }),
+  bookHistory: one(booksHistoryTable, {
+    fields: [ratingsTable.book],
+    references: [booksHistoryTable.id],
   }),
 }));
