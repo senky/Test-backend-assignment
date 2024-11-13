@@ -5,12 +5,14 @@ import { Genre } from "src/db/schema";
 import { BookDetail } from "./models/bookDetail.model";
 import { UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
+import { GqlThrottlerGuard } from "src/security/gql-throttler.guard";
 
 @Resolver(() => Book)
 export class BooksResolver {
   constructor(private booksService: BooksService) {}
 
   @Query(() => [Book], { name: "books" })
+  @UseGuards(GqlThrottlerGuard)
   async getBooks(
     @Args("authorName", { nullable: true }) authorName?: string,
     @Args("bookTitle", { nullable: true }) bookTitle?: string,
