@@ -3,6 +3,8 @@ import { Book } from "./models/book.model";
 import { BooksService } from "./books.service";
 import { Genre } from "src/db/schema";
 import { BookDetail } from "./models/bookDetail.model";
+import { UseGuards } from "@nestjs/common";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
 @Resolver(() => Book)
 export class BooksResolver {
@@ -17,11 +19,13 @@ export class BooksResolver {
   }
 
   @Query(() => BookDetail, { name: "book" })
+  @UseGuards(JwtAuthGuard)
   async getBook(@Args("id", { type: () => ID }) id: number) {
     return this.booksService.getBookDetail(id);
   }
 
   @Mutation(() => Book)
+  @UseGuards(JwtAuthGuard)
   async addBook(
     @Args("title") title: string,
     @Args("author", { type: () => ID }) author: number,
@@ -32,6 +36,7 @@ export class BooksResolver {
   }
 
   @Mutation(() => Book)
+  @UseGuards(JwtAuthGuard)
   async editBook(
     @Args("id", { type: () => ID }) id: number,
     @Args("title") title: string,
@@ -43,6 +48,7 @@ export class BooksResolver {
   }
 
   @Mutation(() => ID)
+  @UseGuards(JwtAuthGuard)
   async deleteBook(@Args("id", { type: () => ID }) id: number) {
     return this.booksService.delete(id);
   }
