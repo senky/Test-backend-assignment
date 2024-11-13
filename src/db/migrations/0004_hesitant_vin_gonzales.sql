@@ -1,0 +1,1 @@
+ALTER TABLE "booksHistory" ALTER COLUMN "outdatedFrom" SET DATA TYPE timestamp;

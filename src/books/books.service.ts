@@ -1,7 +1,12 @@
 import { Book } from "./models/book.model";
 import { DBService } from "src/db/db.service";
 import { eq, ilike } from "drizzle-orm";
-import { booksTable, Genre, ratingsTable } from "src/db/schema";
+import {
+  booksHistoryTable,
+  booksTable,
+  Genre,
+  ratingsTable,
+} from "src/db/schema";
 import { Injectable } from "@nestjs/common";
 
 /**
@@ -77,5 +82,45 @@ export class BooksService {
 
     // Since `.returning()` doesn't return the relations, we need to fetch the book again.
     return this.findOneById(book[0].id);
+  }
+
+  async edit(
+    id: number,
+    title: string,
+    author: number,
+    publishedYear: number,
+    genres: Genre[],
+  ): Promise<Book> {
+    await this.addHistoryRecord(id);
+
+    // Update current version of the book.
+    const editedBook = await this.dbService.db
+      .update(booksTable)
+      .set({
+        title,
+        author,
+        publishedYear,
+        genres,
+      })
+      .where(eq(booksTable.id, id))
+      .returning();
+
+    // Since `.returning()` doesn't return the relations, we need to fetch the book again.
+    return this.findOneById(editedBook[0].id);
+  }
+
+  private async addHistoryRecord(id: number): Promise<void> {
+    const book = await this.dbService.db.query.booksTable.findFirst({
+      where: eq(booksTable.id, id),
+    });
+
+    await this.dbService.db.insert(booksHistoryTable).values({
+      // outdatedFrom is set to current date by default
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      publishedYear: book.publishedYear,
+      genres: book.genres,
+    });
   }
 }

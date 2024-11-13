@@ -29,4 +29,15 @@ export class BooksResolver {
   ) {
     return this.booksService.create(title, author, publishedYear, genres);
   }
+
+  @Mutation(() => Book)
+  async editBook(
+    @Args("id", { type: () => ID }) id: number,
+    @Args("title") title: string,
+    @Args("author", { type: () => ID }) author: number,
+    @Args("publishedYear", { type: () => Int }) publishedYear: number,
+    @Args("genres", { type: () => [Genre] }) genres: Genre[],
+  ) {
+    return this.booksService.edit(id, title, author, publishedYear, genres);
+  }
 }

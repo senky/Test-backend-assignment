@@ -1,13 +1,13 @@
 import { relations } from "drizzle-orm";
 import {
   boolean,
-  date,
-  index,
   integer,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   varchar,
+  timestamp,
 } from "drizzle-orm/pg-core";
 
 export const authorsTable = pgTable("authors", {
@@ -44,15 +44,17 @@ export const booksTable = pgTable("books", {
 export const booksHistoryTable = pgTable(
   "booksHistory",
   {
-    outdatedFrom: date().notNull().defaultNow(),
+    outdatedFrom: timestamp().notNull().defaultNow(),
     id: integer().notNull(),
     title: varchar().notNull(),
-    author: integer().references(() => authorsTable.id),
+    author: integer()
+      .notNull()
+      .references(() => authorsTable.id),
     publishedYear: integer().notNull(),
     genres: genre().array().notNull(),
   },
   (table) => ({
-    idIdx: index("id_idx").on(table.id),
+    pk: primaryKey({ columns: [table.outdatedFrom, table.id] }),
   }),
 );
 
