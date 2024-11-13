@@ -66,6 +66,11 @@ export const ratingsTable = pgTable("ratings", {
   approved: boolean().default(false),
 });
 
+export const usersTable = pgTable("users", {
+  email: text().primaryKey(),
+  password: text().notNull(),
+});
+
 export const authorRelations = relations(authorsTable, ({ many }) => ({
   books: many(booksTable),
   booksHistory: many(booksHistoryTable),

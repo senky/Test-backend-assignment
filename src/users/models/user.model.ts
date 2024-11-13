@@ -1,7 +1,11 @@
-export class User {
-  username: string;
+import { Field, ID, ObjectType } from "@nestjs/graphql";
 
-  constructor(username: string) {
-    this.username = username;
+@ObjectType()
+export class User {
+  @Field(() => ID)
+  email: string;
+
+  constructor(email: string) {
+    this.email = email;
   }
 }

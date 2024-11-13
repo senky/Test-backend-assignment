@@ -20,10 +20,10 @@ export class AuthResolver {
 
   @Mutation(() => AuthResponse)
   async login(
-    @Args("username") username: string,
+    @Args("email") email: string,
     @Args("password") password: string,
   ) {
-    const user = await this.authService.validateUser(username, password);
+    const user = await this.authService.validateUser(email, password);
     if (!user) {
       throw new UnauthorizedException();
     }
