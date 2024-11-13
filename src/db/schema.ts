@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm';
+import { relations } from "drizzle-orm";
 import {
   boolean,
   date,
@@ -8,19 +8,19 @@ import {
   pgTable,
   text,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from "drizzle-orm/pg-core";
 
-export const authorsTable = pgTable('authors', {
+export const authorsTable = pgTable("authors", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar().notNull(),
 });
 
 export enum Genre {
-  SCIENCE_FICTION = 'Science Fiction',
-  ROMANCE = 'Romance',
-  PERSONAL_DEVELOPMENT = 'Personal Development',
-  FANTASY = 'Fantasy',
-  THRILLER = 'Thriller',
+  SCIENCE_FICTION = "Science Fiction",
+  ROMANCE = "Romance",
+  PERSONAL_DEVELOPMENT = "Personal Development",
+  FANTASY = "Fantasy",
+  THRILLER = "Thriller",
 }
 
 // Hack taken from: https://github.com/drizzle-team/drizzle-orm/discussions/1914#discussioncomment-9600199
@@ -29,18 +29,20 @@ function enumToPgEnum<T extends Record<string, any>>(
 ): [T[keyof T], ...T[keyof T][]] {
   return Object.values(myEnum).map((value) => `${value}`) as any;
 }
-export const genre = pgEnum('genre', enumToPgEnum(Genre));
+export const genre = pgEnum("genre", enumToPgEnum(Genre));
 
-export const booksTable = pgTable('books', {
+export const booksTable = pgTable("books", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar().notNull(),
-  author: integer().notNull().references(() => authorsTable.id, { onDelete: 'cascade' }),
+  author: integer()
+    .notNull()
+    .references(() => authorsTable.id, { onDelete: "cascade" }),
   publishedYear: integer().notNull(),
   genres: genre().array().notNull(),
 });
 
 export const booksHistoryTable = pgTable(
-  'booksHistory',
+  "booksHistory",
   {
     outdatedFrom: date().notNull().defaultNow(),
     id: integer().notNull(),
@@ -50,13 +52,13 @@ export const booksHistoryTable = pgTable(
     genres: genre().array().notNull(),
   },
   (table) => ({
-    idIdx: index('id_idx').on(table.id),
+    idIdx: index("id_idx").on(table.id),
   }),
 );
 
-export const ratingsTable = pgTable('ratings', {
+export const ratingsTable = pgTable("ratings", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  book: integer().references(() => booksTable.id, { onDelete: 'cascade' }),
+  book: integer().references(() => booksTable.id, { onDelete: "cascade" }),
   stars: integer().notNull(),
   comment: text(),
   approved: boolean().default(false),

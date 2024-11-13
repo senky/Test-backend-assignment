@@ -1,5 +1,5 @@
-import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
-import { Book } from './book.model';
+import { Field, HideField, ID, ObjectType } from "@nestjs/graphql";
+import { Book } from "./book.model";
 
 /**
  * TODO: Think really hard how we can reuse DB schema to define these models.

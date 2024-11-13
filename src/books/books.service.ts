@@ -1,8 +1,8 @@
-import { Book } from './models/book.model';
-import { DBService } from 'src/db/db.service';
-import { eq, ilike } from 'drizzle-orm';
-import { booksTable, Genre, ratingsTable } from 'src/db/schema';
-import { Injectable } from '@nestjs/common';
+import { Book } from "./models/book.model";
+import { DBService } from "src/db/db.service";
+import { eq, ilike } from "drizzle-orm";
+import { booksTable, Genre, ratingsTable } from "src/db/schema";
+import { Injectable } from "@nestjs/common";
 
 /**
  * TODO: make sure to only query author and ratings if needed.
