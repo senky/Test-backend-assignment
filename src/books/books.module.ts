@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { BooksResolver } from "./books.resolver";
 import { BooksService } from "./books.service";
-import { DBModule } from "src/db/db.module";
+import { DBModule } from "../db/db.module";
 
 @Module({
   imports: [DBModule],

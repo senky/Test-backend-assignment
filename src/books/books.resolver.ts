@@ -1,11 +1,11 @@
 import { Args, ID, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Book } from "./models/book.model";
 import { BooksService } from "./books.service";
-import { Genre } from "src/db/schema";
+import { Genre } from "../db/schema";
 import { BookDetail } from "./models/book-detail.model";
 import { UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
-import { GqlThrottlerGuard } from "src/security/gql-throttler.guard";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { GqlThrottlerGuard } from "../security/gql-throttler.guard";
 import { GetBooksArgs } from "./args/get-books.args";
 import { GetBookArgs } from "./args/get-book.args";
 

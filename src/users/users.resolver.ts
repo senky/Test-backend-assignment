@@ -1,7 +1,7 @@
 import { Resolver, Mutation, Args } from "@nestjs/graphql";
 import { UsersService } from "./users.service";
 import { User } from "./models/user.model";
-import { GqlThrottlerGuard } from "src/security/gql-throttler.guard";
+import { GqlThrottlerGuard } from "../security/gql-throttler.guard";
 import { UseGuards } from "@nestjs/common";
 
 @Resolver(() => User)

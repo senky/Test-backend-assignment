@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Author } from "./author.model";
 import { Rating } from "./rating.model";
-import { Genre } from "src/db/schema";
+import { Genre } from "../../db/schema";
 
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 

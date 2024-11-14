@@ -1,12 +1,12 @@
 import { Book } from "./models/book.model";
-import { DBService } from "src/db/db.service";
+import { DBService } from "../db/db.service";
 import { eq, ilike } from "drizzle-orm";
 import {
   booksHistoryTable,
   booksTable,
   Genre,
   ratingsTable,
-} from "src/db/schema";
+} from "../db/schema";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { BookDetail } from "./models/book-detail.model";
 
@@ -26,7 +26,6 @@ export class BooksService {
     authorName?: string;
     bookTitle?: string;
     offset?: number;
-    limit?: number;
   }): Promise<Book[]> {
     const books = await this.dbService.db.query.booksTable
       .findMany({
@@ -46,6 +45,7 @@ export class BooksService {
           },
         },
       })
+      // BUG: We want to return 10 books, but this reduces it down to potentially 0!
       // I am fully aware that this is suboptimal, but drizzle in current state doesn't allow
       // "parent" filtering: https://github.com/drizzle-team/drizzle-orm/discussions/1152
       // The discussion includes suggested workaround but that is so hart to read I prefer this
@@ -159,6 +159,11 @@ export class BooksService {
       },
       where: eq(booksTable.id, id),
     });
+
+    // TODO Maybe we don't want to throw an error here to allow `getBookDetail` return history even after book doesn't exist.
+    if (!book) {
+      throw new NotFoundException(`Book with id ${id} not found`);
+    }
     return new Book(book);
   }
 

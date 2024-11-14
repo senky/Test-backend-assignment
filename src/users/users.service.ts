@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { DBService } from "src/db/db.service";
-import { usersTable } from "src/db/schema";
+import { DBService } from "../db/db.service";
+import { usersTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import * as bcrypt from "bcrypt";
 import { User } from "./models/user.model";
