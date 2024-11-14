@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { Resolver, GqlExecutionContext, Mutation, Args } from "@nestjs/graphql";
 import { AuthService } from "./auth.service";
-import { AuthResponse } from "./models/authResponse.model";
+import { AuthResponse } from "./models/auth-response.model";
 import { GqlThrottlerGuard } from "src/security/gql-throttler.guard";
 
 export const CurrentUser = createParamDecorator(

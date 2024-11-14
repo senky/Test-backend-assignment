@@ -8,7 +8,7 @@ import {
   ratingsTable,
 } from "src/db/schema";
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { BookDetail } from "./models/bookDetail.model";
+import { BookDetail } from "./models/book-detail.model";
 
 /**
  * TODO: make sure to only query author and ratings if needed.
